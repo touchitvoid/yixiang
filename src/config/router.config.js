@@ -51,6 +51,7 @@ export const asyncRouterMap = [
           {
             path: '/originality/group/sheet',
             name: 'OriginalityGroupSheet',
+            props: true,
             hideHeader: true, // 强制显示 MenuItem 而不是 SubMenu
             component: () => import('@/views/originality/GroupSheet'),
             meta: { title: '新建/编辑广告组', keepAlive: true }

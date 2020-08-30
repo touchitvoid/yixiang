@@ -280,6 +280,8 @@ export default {
     handleEdit (record) {
       this.visible = true
       this.mdl = { ...record }
+
+      this.$router.push({ name: 'OriginalityGroupSheet', params: { editing: record.id } })
     },
     handleOk () {
       const form = this.$refs.createModal.form
@@ -332,11 +334,21 @@ export default {
       form.resetFields() // 清理表单数据（可不做）
     },
     handleSub (record) {
-      if (record.status !== 0) {
-        this.$message.info(`${record.no} 订阅成功`)
-      } else {
-        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-      }
+      this.$Modal.confirm({
+        title: '删除广告计划',
+        content: '确认要删除这条广告计划吗,其子创意计划将会一并删除',
+        okText: '是的',
+        cancelText: '取消',
+        onOk: async () => {
+          try {
+            await new Advert(record).delete()
+            this.$Message.success('删除成功')
+            this.fetchAdverts()
+          } catch (e) {
+            console.error(e)
+          }
+        }
+      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys

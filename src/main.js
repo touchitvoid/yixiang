@@ -20,6 +20,10 @@ import './core/lazy_use'
 // import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less'
+import 'ant-design-vue/dist/antd.css'
+import 'view-design/dist/styles/iview.css'
+import ViewUI from 'view-design'
+Vue.use(ViewUI)
 
 Vue.config.productionTip = false
 
