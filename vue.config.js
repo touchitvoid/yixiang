@@ -84,6 +84,8 @@ const vueConfig = {
     }
   },
 
+  lintOnSave: false,
+
   css: {
     loaderOptions: {
       less: {
@@ -115,7 +117,7 @@ const vueConfig = {
 
   // disable source map in production
   productionSourceMap: false,
-  lintOnSave: undefined,
+  lintOnSave: true,
   // babel-loader no-ignore node_modules/*
   transpileDependencies: []
 }
