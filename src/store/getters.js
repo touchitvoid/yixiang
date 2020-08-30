@@ -1,4 +1,5 @@
 const getters = {
+  user: state => state.user.info,
   isMobile: state => state.app.isMobile,
   lang: state => state.app.lang,
   theme: state => state.app.theme,
