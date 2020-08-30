@@ -1,8 +1,8 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
-import { getToken } from '@/libs/util'
-// import { Message } from 'iview'
+import { Message } from 'ant-design-vue'
+import storage from 'store'
 
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
@@ -41,7 +41,7 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         'Accept': 'application/json',
-        'Authorization': getToken()
+        'Authorization': storage.get('token')
       }
     }
     return config
@@ -69,26 +69,26 @@ class HttpRequest {
       this.destroy(url)
       return res
     }, error => {
-      this.destroy(url)
-      let errorInfo = error.response
-
-      if (errorInfo.status === 401) {
-        store.dispatch('auth/logout')
-      }
-
-      if (!errorInfo) {
-        const { request: { statusText, status }, config } = JSON.parse(JSON.stringify(error))
-        errorInfo = {
-          statusText,
-          status,
-          request: { responseURL: config.url }
-        }
-      }
-      addErrorLog(errorInfo)
-
-      renderErrorMessages(error.response)
-
-      return Promise.reject(error)
+      // this.destroy(url)
+      // let errorInfo = error.response
+      //
+      // if (errorInfo.status === 401) {
+      //   // store.dispatch('auth/logout')
+      // }
+      //
+      // if (!errorInfo) {
+      //   const { request: { statusText, status }, config } = JSON.parse(JSON.stringify(error))
+      //   errorInfo = {
+      //     statusText,
+      //     status,
+      //     request: { responseURL: config.url }
+      //   }
+      // }
+      // addErrorLog(errorInfo)
+      //
+      // renderErrorMessages(error.response)
+      //
+      // return Promise.reject(error)
     })
   }
   request (options) {

@@ -3,17 +3,18 @@
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 const { title, cookieExpires, useI18n } = config
+import storage from 'store'
 
 export const TOKEN_KEY = 'token'
 
 export const setToken = (token) => {
-  Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
+  storage.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
 }
 
-export const removeToken = () => Cookies.remove(TOKEN_KEY)
+export const removeToken = () => storage.remove(TOKEN_KEY)
 
 export const getToken = () => {
-  const token = Cookies.get(TOKEN_KEY)
+  const token = storage.get(TOKEN_KEY)
   if (token) return token
   else return false
 }

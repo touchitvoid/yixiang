@@ -1,46 +1,13 @@
 <template>
   <div>
     <a-row :gutter="24">
-      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" title="今日消费" total="￥126,560">
-          <a-tooltip title="今日消费金额" slot="action">
+      <a-col v-for="(item, index) in overviewValues" :key="index" :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <chart-card :loading="loading" :title="item.label.substr(0, item.label.indexOf('/'))" :total="`¥${item.value}`">
+          <a-tooltip :title="item.label" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
           <div>
             <trend flag="up" style="margin-right: 16px;">
-              /元
-            </trend>
-          </div>
-        </chart-card>
-      </a-col>
-      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" title="预计消费" total="￥126,560">
-          <a-tooltip title="预计金额" slot="action">
-            <a-icon type="info-circle-o" />
-          </a-tooltip>
-          <div>
-            <trend flag="up" style="margin-right: 16px;">
-              /天
-            </trend>
-          </div>
-        </chart-card>
-      </a-col>
-      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" title="账户余额" total="￥126,560">
-          <div>
-            <trend flag="up" style="margin-right: 16px;">
-              /元
-            </trend>
-          </div>
-        </chart-card>
-      </a-col>
-      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" title="账户日预算" total="未限制">
-          <a-tooltip title="账户每日预计消费" slot="action">
-            <a-icon type="info-circle-o" />
-          </a-tooltip>
-          <div>
-             <trend flag="up" style="margin-right: 16px;">
               /元
             </trend>
           </div>
@@ -112,6 +79,7 @@ import {
   MiniSmoothArea
 } from '@/components'
 import { baseMixin } from '@/store/app-mixin'
+import { overviewValues } from '../../api/statistics'
 
 const barData = []
 const barData2 = []
@@ -247,13 +215,21 @@ export default {
       pieStyle: {
         stroke: '#fff',
         lineWidth: 1
-      }
+      },
+
+      overviewValues: []
     }
   },
-  created () {
-    setTimeout(() => {
-      this.loading = !this.loading
-    }, 1000)
+  async created () {
+    await this.fetchOverviewValues()
+    this.loading = false
+  },
+  methods: {
+    async fetchOverviewValues () {
+      const { data } = await overviewValues()
+
+      this.overviewValues = data
+    }
   }
 }
 </script>
