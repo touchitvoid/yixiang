@@ -22,7 +22,6 @@
 <script>
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
-import { getRoleList, getServiceList } from '@/api/manage'
 import { Bar } from '@/components'
 import { visitsTable, visitsStatistics} from '../../api/statistics'
 
