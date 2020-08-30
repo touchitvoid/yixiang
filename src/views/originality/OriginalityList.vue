@@ -81,7 +81,7 @@
         </span>
 
         <span slot="cover" slot-scope="text, record">
-          <img class="cover-img" src="https://hbimg.huabanimg.com/e9d20c8acf0c1a425551a77a21a5c86745b10d272d0b42-sJg59h_fw658/format/webp" alt="">
+          <img class="cover-img" :src="text" alt="">
         </span>
 
       </a-table>
