@@ -59,6 +59,11 @@
         @change="page.current = $event.current"
         showPagination="auto"
       >
+
+        <div slot="enable" slot-scope="text, record">
+          <a-switch default-checked @change="handleChangeEnable($event, record)" />
+        </div>
+
         <span slot="switch">
           <a-switch></a-switch>
         </span>
@@ -76,7 +81,7 @@
           <template>
             <a @click="handleEdit(record)">编辑</a>
             <a-divider type="vertical" />
-            <a @click="handleSub(record)">添加创意</a>
+            <a @click="handleAddIdea(record)">添加创意</a>
             <a-divider type="vertical" />
             <a @click="handleSub(record)">移除</a>
           </template>
@@ -104,13 +109,14 @@ import Advert from '../../models/Advert'
 
 import StepByStepModal from './modules/StepByStepModal'
 import CreateForm from './modules/CreateForm'
+import Idea from '../../models/Idea'
 
 const columns = [
   {
     title: '启用状态',
     key: 'enable',
     dataIndex: 'enable',
-    customRender: bool => bool ? '启用' : '停用'
+    scopedSlots: { customRender: 'enable' }
   },
   {
     title: '计划名称',
@@ -249,6 +255,12 @@ export default {
     }
   },
   methods: {
+    async handleChangeEnable (value, row) {
+      const idea = new Advert({ id: row.id })
+      idea.enable = value
+      await idea.save()
+      this.$Message.success('更新状态成功')
+    },
     async fetchAdverts () {
       try {
         this.loading = true
@@ -332,6 +344,9 @@ export default {
 
       const form = this.$refs.createModal.form
       form.resetFields() // 清理表单数据（可不做）
+    },
+    handleAddIdea(row) {
+      this.$router.push({ name: 'OriginalitySheet', params: { advertId: row.id } })
     },
     handleSub (record) {
       this.$Modal.confirm({

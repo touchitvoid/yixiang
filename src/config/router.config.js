@@ -66,6 +66,7 @@ export const asyncRouterMap = [
           {
             path: '/originality/sheet',
             name: 'OriginalitySheet',
+            props: true,
             hideChildrenInMenu: true,
             component: () => import('@/views/originality/OriginalitySheet'),
             meta: { title: '添加/编辑创意', keepAlive: true }

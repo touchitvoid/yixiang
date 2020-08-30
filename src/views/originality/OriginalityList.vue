@@ -58,6 +58,10 @@
         @change="page.current = $event.current"
         showPagination="auto"
       >
+        <div slot="enable" slot-scope="text, record">
+          <a-switch default-checked @change="handleChangeEnable($event, record)" />
+        </div>
+
         <span slot="switch">
           <a-switch></a-switch>
         </span>
@@ -72,14 +76,12 @@
           <template>
             <a @click="handleEdit(record)">编辑</a>
             <a-divider type="vertical" />
-            <a @click="handleSub(record)">添加创意</a>
-            <a-divider type="vertical" />
             <a @click="handleSub(record)">移除</a>
           </template>
         </span>
 
         <span slot="cover" slot-scope="text, record">
-          <img class="cover-img" src="https://hbimg.huabanimg.com/e9d20c8acf0c1a425551a77a21a5c86745b10d272d0b42-sJg59h_fw658/format/webp" alt="">
+          <img class="cover-img" :src="text" alt="">
         </span>
 
       </a-table>
@@ -113,7 +115,7 @@ const columns = [
     title: '开关',
     dataIndex: 'enable',
     key: 'enable',
-    scopedSlots: { customRender: 'switch' }
+    scopedSlots: { customRender: 'enable' }
   },
   {
     title: '审核状态',
@@ -279,6 +281,12 @@ export default {
     'page.pageSize': 'fetchIdeas'
   },
   methods: {
+    async handleChangeEnable (value, row) {
+      const idea = new Idea({ id: row.id })
+      idea.enable = value
+      await idea.save()
+      this.$Message.success('更新状态成功')
+    },
     async fetchAdvertOptions () {
       const { data } = await Advert.select(['id', 'name']).get()
 
@@ -314,6 +322,7 @@ export default {
     handleEdit (record) {
       this.visible = true
       this.mdl = { ...record }
+      this.$router.push({ name: 'OriginalitySheet', params: { editing: record.id } })
     },
     handleOk () {
       const form = this.$refs.createModal.form
@@ -366,11 +375,21 @@ export default {
       form.resetFields() // 清理表单数据（可不做）
     },
     handleSub (record) {
-      if (record.status !== 0) {
-        this.$message.info(`${record.no} 订阅成功`)
-      } else {
-        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-      }
+      this.$Modal.confirm({
+        title: '删除创意计划',
+        content: '确认要删除这条创意计划吗',
+        okText: '是的',
+        cancelText: '取消',
+        onOk: async () => {
+          try {
+            await new Idea({ id: record.id }).delete()
+            this.$Message.success('删除成功')
+            this.fetchIdeas()
+          } catch (e) {
+            console.error(e)
+          }
+        }
+      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
