@@ -1,135 +1,135 @@
 <template>
-  <a-card class="container">
+  <div class="container">
     <div class="form-item">
       <div class="form-title">计划名称</div>
-      <a-input v-model="formData.name" style="width: 500px;display: block;margin-bottom: 15px" placeholder="请输入计划名称" />
+      <i-input v-model="formData.name" style="width: 500px;display: block;margin-bottom: 15px" placeholder="请输入计划名称" />
     </div>
-    <a-divider></a-divider>
+    <Divider></Divider>
     <div class="form-title">用户属性</div>
-    <a-form :label-width="80" label-position="left">
-      <a-form-item label="年龄:">
+    <Form :label-width="80" label-position="left">
+      <FormItem label="年龄:">
         <bool-radio v-model="formData.limit_age" false-label="自定义"></bool-radio>
         <div style="display: inline-block" v-show="formData.limit_age">
-          <a-input-number v-model="formData.age_min" placeholder="请输入" size="small" :max="99" :min="1" style="margin-left: 8px"></a-input-number>
+          <InputNumber v-model="formData.age_min" placeholder="请输入" size="small" :max="99" :min="1" style="margin-left: 8px"></InputNumber>
           -
-          <a-input-number v-model="formData.age_max" placeholder="请输入" size="small" :max="99" :min="1"></a-input-number>
+          <InputNumber v-model="formData.age_max" placeholder="请输入" size="small" :max="99" :min="1"></InputNumber>
         </div>
-      </a-form-item>
-      <a-form-item label="性别:">
-        <a-radio v-model="formData.gender">
-          <a-radio
+      </FormItem>
+      <FormItem label="性别:">
+        <RadioGroup v-model="formData.gender">
+          <Radio
             v-for="(item, index) in genders"
             :key="index"
             :label="item.value"
-          >{{ item.label }}</a-radio>
-        </a-radio>
-      </a-form-item>
-      <a-form-item label="地域:">
+          >{{ item.label }}</Radio>
+        </RadioGroup>
+      </FormItem>
+      <FormItem label="地域:">
         <bool-radio v-model="formData.limit_address" false-label="省市区"></bool-radio>
         <div class="area-card__group" v-show="formData.limit_address">
           <div class="area-tree">
-            <a-tree @on-check-change="handleSelectArea" :data="AreaData" show-checkbox></a-tree>
+            <Tree @on-check-change="handleSelectArea" :data="AreaData" show-checkbox></Tree>
           </div>
           <div class="area-result">
-            <a-tree  @on-check-change="handleCancelSelect" :data="AreaResult" show-checkbox></a-tree>
+            <Tree  @on-check-change="handleCancelSelect" :data="AreaResult" show-checkbox></Tree>
           </div>
         </div>
-      </a-form-item>
-      <a-form-item label="人生状态:">
+      </FormItem>
+      <FormItem label="人生状态:">
         <bool-radio v-model="formData.limit_human_state" false-label="人生状态分类"></bool-radio>
         <div v-show="formData.limit_human_state">
           全部人生状态
-          <a-button size="small" style="margin-left: 5px" @click="handleVisible('life')">更改</a-button>
+          <Button size="small" style="margin-left: 5px" @click="handleVisible('life')">更改</Button>
         </div>
-      </a-form-item>
-      <a-form-item label="投放平台:">
-        <a-checkbox-group v-model="formData.push_platform">
-          <a-checkbox
+      </FormItem>
+      <FormItem label="投放平台:">
+        <CheckboxGroup v-model="formData.push_platform">
+          <Checkbox
             v-for="(item, index) in systems"
             :key="index"
             :label="item.value"
-          >{{ item.label }}</a-checkbox>
-        </a-checkbox-group>
-      </a-form-item>
-      <a-form-item label="App行为:">
+          >{{ item.label }}</Checkbox>
+        </CheckboxGroup>
+      </FormItem>
+      <FormItem label="App行为:">
         <bool-radio v-model="formData.limit_app_action" false-label="按类别"></bool-radio>
         <div v-show="formData.limit_app_action">
-          <a-button size="small" style="margin-left: 5px" @click="handleVisible('app')">更改</a-button>
+          <Button size="small" style="margin-left: 5px" @click="handleVisible('app')">更改</Button>
         </div>
-      </a-form-item>
-      <a-form-item label="网络:">
-        <a-checkbox-group v-model="formData.network_state">
-          <a-checkbox
+      </FormItem>
+      <FormItem label="网络:">
+        <CheckboxGroup v-model="formData.network_state">
+          <Checkbox
             v-for="(item, index) in network_status"
             :key="index"
             :label="item.value"
-          >{{ item.label }}</a-checkbox>
-        </a-checkbox-group>
-      </a-form-item>
-      <a-form-item label="手机品牌:">
+          >{{ item.label }}</Checkbox>
+        </CheckboxGroup>
+      </FormItem>
+      <FormItem label="手机品牌:">
         <bool-radio v-model="formData.limit_phone_brand" false-label="选择品牌"></bool-radio>
         <div v-show="formData.limit_phone_brand">
-          <a-button @click.stop="handleVisible('brand')" style="margin-left: 6px;" size="small">更改</a-button>
+          <Button @click.stop="handleVisible('brand')" style="margin-left: 6px;" size="small">更改</Button>
         </div>
-      </a-form-item>
-    </a-form>
-    <a-divider></a-divider>
+      </FormItem>
+    </Form>
+    <Divider></Divider>
     <div class="form-title">预算与排期</div>
-    <a-form :label-width="80" label-position="left">
-      <a-form-item label="单日预算:">
+    <Form :label-width="80" label-position="left">
+      <FormItem label="单日预算:">
         <bool-radio v-model="formData.limit_daily_budget" false-label="自定义"></bool-radio>
-        <a-input v-show="formData.limit_daily_budget" v-model="formData.daily_budget" placeholder="不低于50元" />
-      </a-form-item>
-      <a-form-item label="投放排期:">
+        <Input v-show="formData.limit_daily_budget" v-model="formData.daily_budget" placeholder="不低于50元" />
+      </FormItem>
+      <FormItem label="投放排期:">
         <bool-radio v-model="formData.limit_publish_date" true-label="从今天起开始长期投放( 当前时间 )" false-label="设置起始和结束时间"></bool-radio>
-        <a-date-picker v-show="formData.limit_publish_date" :value="[formData.publish_start_at, formData.publish_end_at]" @on-change="handlePublishDateChange" type="daterange" placeholder="Select date" style="width: 200px"></a-date-picker>
-      </a-form-item>
-      <a-form-item label="投放时段:">
+        <DatePicker v-show="formData.limit_publish_date" :value="[formData.publish_start_at, formData.publish_end_at]" @on-change="handlePublishDateChange" type="daterange" placeholder="Select date" style="width: 200px"></DatePicker>
+      </FormItem>
+      <FormItem label="投放时段:">
         <bool-radio v-model="formData.limit_publish_time" true-label="全时间段" false-label="特定时间段"></bool-radio>
-        <a-time-picker v-if="formData.limit_publish_time" :value="[formData.daily_publish_start_at, formData.daily_publish_end_at]" @on-change="handleDailyPublishTimeChange" format="HH:mm:ss" type="timerange" placeholder="选择开始时间和结束时间" style="width: 240px"></a-time-picker>
-      </a-form-item>
-      <a-form-item label="计费模式:">
-        <a-radio-group vertical v-model="formData.billing_mode">
-          <a-radio v-for="{ label, value } in billing_modes" :key="value" :label="value">{{ label }}</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="点击出价:" v-if="formData.billing_mode === BILLING_MODE_CPC">
-        <a-input v-model="formData.price" class="selector" placeholder="请输入点击出价"></a-input>
-      </a-form-item>
-      <a-form-item label="设置出价:" v-if="formData.billing_mode === BILLING_MODE_CPM">
-        <a-input v-model="formData.price" class="selector" placeholder="为保证优质流量高触达率，建议出价不低于25元" style="margin-right: 7px"></a-input>元/千次曝光
-      </a-form-item>
-    </a-form>
-    <a-divider></a-divider>
-    <a-button style="margin-right: 12px">取消</a-button>
-    <a-button type="primary" @click="handleSubmit">{{ isEdit ? '保存计划' : '新增计划' }}</a-button>
-    <a-modal title="更改人生状态" v-model="visible">
-      <a-checkbox-group v-if="modalKey==='life'" v-model="formData.human_state">
-        <a-checkbox
+        <TimePicker v-if="formData.limit_publish_time" :value="[formData.daily_publish_start_at, formData.daily_publish_end_at]" @on-change="handleDailyPublishTimeChange" format="HH:mm:ss" type="timerange" placeholder="选择开始时间和结束时间" style="width: 240px"></TimePicker>
+      </FormItem>
+      <FormItem label="计费模式:">
+        <RadioGroup vertical v-model="formData.billing_mode">
+          <Radio v-for="{ label, value } in billing_modes" :key="value" :label="value">{{ label }}</Radio>
+        </RadioGroup>
+      </FormItem>
+      <FormItem label="点击出价:" v-if="formData.billing_mode === BILLING_MODE_CPC">
+        <Input v-model="formData.price" class="selector" placeholder="请输入点击出价"></Input>
+      </FormItem>
+      <FormItem label="设置出价:" v-if="formData.billing_mode === BILLING_MODE_CPM">
+        <Input v-model="formData.price" class="selector" placeholder="为保证优质流量高触达率，建议出价不低于25元" style="margin-right: 7px"></Input>元/千次曝光
+      </FormItem>
+    </Form>
+    <Divider></Divider>
+    <Button style="margin-right: 12px" @click="$router.push({ name: 'OriginalityGroup' })">取消</Button>
+    <Button type="success" @click="handleSubmit">{{ isEdit ? '保存计划' : '新增计划' }}</Button>
+    <Modal title="更改人生状态" v-model="visible">
+      <CheckboxGroup v-if="modalKey==='life'" v-model="formData.human_state">
+        <Checkbox
           style="margin: 0 15px 15px 0"
           v-for="(item, index) in life_status"
           :key="index"
           :label="item.value"
-        >{{ item.label }}</a-checkbox>
-      </a-checkbox-group>
-      <a-checkbox-group v-if="modalKey==='app'" v-model="formData.app_action">
-        <a-checkbox
+        >{{ item.label }}</Checkbox>
+      </CheckboxGroup>
+      <CheckboxGroup v-if="modalKey==='app'" v-model="formData.app_action">
+        <Checkbox
           style="margin: 0 15px 15px 0"
           v-for="(item, index) in app_actions"
           :key="index"
           :label="item.value"
-        >{{ item.label }}</a-checkbox>
-      </a-checkbox-group>
-      <a-checkbox-group v-if="modalKey==='brand'" v-model="formData.phone_brand">
-        <a-checkbox
+        >{{ item.label }}</Checkbox>
+      </CheckboxGroup>
+      <CheckboxGroup v-if="modalKey==='brand'" v-model="formData.phone_brand">
+        <Checkbox
           style="margin: 0 15px 15px 0"
           v-for="(item, index) in phone_brands"
           :key="index"
           :label="item.value"
-        >{{ item.label }}</a-checkbox>
-      </a-checkbox-group>
-    </a-modal>
-  </a-card>
+        >{{ item.label }}</Checkbox>
+      </CheckboxGroup>
+    </Modal>
+  </div>
 </template>
 
 <script>
@@ -269,7 +269,7 @@ export default {
       try {
         await new Advert(this.formData).save()
         this.$Message.success(this.isEdit ? '编辑成功' : '添加成功')
-        this.$router.push({ name: 'ad' })
+        this.$router.push({ name: 'OriginalityGroup' })
       } catch (e) {
         console.error(e)
       }
@@ -287,42 +287,38 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@input-width: 280px;
+  @input-width: 280px;
 
-/deep/ .ant-form-item {
-  margin-bottom: 5px;
-}
-
-.selector,
-.input {
-  width: @input-width;
-}
-.form-title {
-  font-size: 17px;
-  font-weight: bold;
-  color: rgba(0, 0, 0, 0.7);
-  box-sizing: border-box;
-  padding-left: 10px;
-  border-left: 4px solid rosybrown;
-  margin-bottom: 14px;
-}
-.area-card__group {
-  > div {
-    width: 200px;
-    height: 280px;
-    border-radius: 4px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    display: inline-block;
-    margin-right: 12px;
-    box-sizing: border-box;
-    padding: 16px 14px;
-    overflow-y: auto;
+  .selector,
+  .input {
+    width: @input-width;
   }
-}
-.brand {
-  display: -webkit-flex;
-  align-items: center;
-  user-select: none;
-  cursor: pointer;
-}
+  .form-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+    padding-left: 10px;
+    border-left: 4px solid rosybrown;
+    margin-bottom: 14px;
+  }
+  .area-card__group {
+    > div {
+      width: 200px;
+      height: 280px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      margin-right: 12px;
+      box-sizing: border-box;
+      padding: 16px 14px;
+      overflow-y: auto;
+    }
+  }
+  .brand {
+    display: -webkit-flex;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+  }
 </style>
