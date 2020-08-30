@@ -17,7 +17,7 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://souxun-api.test',
+    dev: 'http://api.smalltoutiao.com',
     pro: 'http://api.smalltoutiao.com'
   },
   /**

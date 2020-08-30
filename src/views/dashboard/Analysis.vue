@@ -18,9 +18,6 @@
     <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
       <div class="salesCard">
         <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
-          <div class="extra-wrapper" slot="tabBarExtraContent">
-            <a-range-picker :style="{width: '256px'}" />
-          </div>
           <a-tab-pane loading="true" tab="点击量分布" key="1">
             <a-row>
               <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
@@ -39,7 +36,8 @@
       <a-row :gutter="24" type="flex" :style="{ marginTop: '24px' }">
         <a-col :xl="14" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card :loading="loading" :bordered="false" title="点击量分布（日期）" :style="{ height: '100%' }">
-            <bar :height="300" :data="barData" />
+            <a-range-picker v-model="date" :style="{width: '256px'}" @change="fetchVisitsStatistics" />
+            <bar :height="300" :data="barData2" />
           </a-card>
         </a-col>
         <a-col :xl="10" :lg="24" :md="24" :sm="24" :xs="24">
@@ -79,28 +77,7 @@ import {
   MiniSmoothArea
 } from '@/components'
 import { baseMixin } from '@/store/app-mixin'
-import { overviewValues } from '../../api/statistics'
-
-const barData = []
-const barData2 = []
-for (let i = 0; i < 12; i += 1) {
-  barData.push({
-    x: `${i + 1}月`,
-    y: Math.floor(Math.random() * 1000) + 200
-  })
-  barData2.push({
-    x: `${i + 1}月`,
-    y: Math.floor(Math.random() * 1000) + 200
-  })
-}
-
-const rankList = []
-for (let i = 0; i < 7; i++) {
-  rankList.push({
-    name: '白鹭岛 ' + (i + 1) + ' 号店',
-    total: 1234.56 - i * 100
-  })
-}
+import { overviewValues, ideaStatistics, visitsStatistics } from '../../api/statistics'
 
 const searchUserData = []
 for (let i = 0; i < 7; i++) {
@@ -156,29 +133,11 @@ for (let i = 0; i < 50; i += 1) {
 
 const DataSet = require('@antv/data-set')
 
-const sourceData = [
-  { item: '家用电器', count: 32.2 },
-  { item: '食用酒水', count: 21 },
-  { item: '个护健康', count: 17 },
-  { item: '服饰箱包', count: 13 },
-  { item: '母婴产品', count: 9 },
-  { item: '其他', count: 7.8 }
-]
-
 const pieScale = [{
   dataKey: 'percent',
   min: 0,
   formatter: '.0%'
 }]
-
-const dv = new DataSet.View().source(sourceData)
-dv.transform({
-  type: 'percent',
-  field: 'count',
-  dimension: 'item',
-  as: 'percent'
-})
-const pieData = dv.rows
 
 export default {
   name: 'Analysis',
@@ -197,7 +156,7 @@ export default {
   data () {
     return {
       loading: true,
-      rankList,
+      rankList: [],
 
       // 搜索用户数
       searchUserData,
@@ -205,30 +164,84 @@ export default {
       searchTableColumns,
       searchData,
 
-      barData,
-      barData2,
+      barData: [],
+      barData2: [],
 
       //
       pieScale,
-      pieData,
-      sourceData,
+      pieData: [],
       pieStyle: {
         stroke: '#fff',
         lineWidth: 1
       },
-
+      date: [],
       overviewValues: []
     }
   },
   async created () {
     await this.fetchOverviewValues()
+    await this.fetchIdeaStatistics()
+    await this.fetchVisitsStatistics()
     this.loading = false
   },
+  computed: {
+    start_at () {
+      var curTime = new Date().getTime()
+      var startDate = curTime - (7 * 3600 * 24 * 1000)
+      startDate = new Date(startDate)
+
+      return this.formatTime(this.date[0] && this.date[0]._d || startDate)
+    },
+    end_at () {
+      return this.formatTime(this.date[0] && this.date[1]._d || new Date())
+    },
+  },
   methods: {
+    formatTime (date) {
+      console.log(date)
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1; month = month < 10 ? '0' + month : month
+      let day = date.getDate(); day = day < 10 ? '0' + day : day
+      return year + '-' + month + '-' + day + ' 00:00:00'
+    },
+    async fetchVisitsStatistics () {
+      const { data } = await visitsStatistics({ start_at: this.start_at, end_at: this.end_at })
+      this.barData2 = data.options.map((d, index) => (
+        {
+          x: d,
+          y: data.data[0].data[index]
+        }
+      ))
+    },
     async fetchOverviewValues () {
       const { data } = await overviewValues()
 
       this.overviewValues = data
+    },
+    async fetchIdeaStatistics () {
+      const { data } = await ideaStatistics()
+      this.barData = data.map(item => ({
+        x: item.name,
+        y: item.view_count
+      }))
+      this.rankList = data.map(({ name, view_count }) => ({
+        name,
+        total: view_count
+      }))
+      const source = data.map(item => {
+        return {
+          item: item.name,
+          count: item.view_count+1
+        }
+      })
+      const dv = new DataSet.View().source(source)
+      dv.transform({
+        type: 'percent',
+        field: 'count',
+        dimension: 'item',
+        as: 'percent'
+      })
+      this.pieData = dv.rows
     }
   }
 }

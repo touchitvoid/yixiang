@@ -86,7 +86,7 @@ class HttpRequest {
       // }
       // addErrorLog(errorInfo)
       //
-      // renderErrorMessages(error.response)
+      renderErrorMessages(error.response)
       //
       // return Promise.reject(error)
     })
