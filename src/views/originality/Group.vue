@@ -56,6 +56,7 @@
         :data-source="adverts"
         :loading="loading"
         :pagination="page"
+        @change="page.current = $event.current"
         showPagination="auto"
       >
         <span slot="switch">
@@ -205,8 +206,6 @@ export default {
         const requestParameters = Object.assign({}, parameter, this.queryParam)
         console.log('loadData request parameters:', requestParameters)
         return getServiceList(requestParameters).then(res => {
-          console.log(233)
-          console.log(res)
           return res.result
         })
       },

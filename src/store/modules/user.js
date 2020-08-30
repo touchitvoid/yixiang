@@ -37,6 +37,7 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
+          commit('SET_INFO', response.user)
           const token = `${response.token_type} ${response.access_token}`
           storage.set('token', token, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', token)

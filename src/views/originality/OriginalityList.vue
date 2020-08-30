@@ -6,19 +6,19 @@
           <a-row :gutter="48">
             <a-col :md="5" :sm="24">
               <a-form-item label="广告计划">
-                <a-select placeholder="请选择">
-                  <a-select-option value="0">计划</a-select-option>
+                <a-select placeholder="请选择" allowClear v-model="search.advert_id">
+                  <a-select-option v-for="{ id, name } in advertOptions" :key="id" :value="id">{{ name }}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="5" :sm="24">
               <a-form-item label="关键字">
-                <a-input placeholder="请输入广告名称或ID"></a-input>
+                <a-input placeholder="请输入广告名称或ID" allowClear v-model="search.name"></a-input>
               </a-form-item>
             </a-col>
             <a-col :md="5" :sm="24">
               <a-form-item label="创建日期">
-                <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入创建日期" />
+                <a-date-picker v-model="search.created_at" style="width: 100%" placeholder="请输入创建日期" allowClear/>
               </a-form-item>
             </a-col>
             <a-col :md="(!advanced && 8) || 24" :sm="24">
@@ -26,7 +26,7 @@
                 class="table-page-search-submitButtons"
                 :style="(advanced && { float: 'right', overflow: 'hidden' }) || {}"
               >
-                <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+                <a-button type="primary" @click="fetchIdeas">查询</a-button>
                 <a-button style="margin-left: 8px" @click="() => (this.queryParam = {})">重置</a-button>
                 <a-divider type="vertical" />
                 <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
@@ -47,12 +47,15 @@
         </a-dropdown>
       </div>
 
-      <s-table
+      <a-table
         ref="table"
         size="default"
         rowKey="key"
         :columns="columns"
-        :data="loadData"
+        :data-source="ideas"
+        :loading="loading"
+        :pagination="page"
+        @change="page.current = $event.current"
         showPagination="auto"
       >
         <span slot="switch">
@@ -79,7 +82,7 @@
           <img class="cover-img" src="https://hbimg.huabanimg.com/e9d20c8acf0c1a425551a77a21a5c86745b10d272d0b42-sJg59h_fw658/format/webp" alt="">
         </span>
 
-      </s-table>
+      </a-table>
 
       <create-form
         ref="createModal"
@@ -102,28 +105,31 @@ import { getRoleList, getServiceList } from '@/api/manage'
 import StepByStepModal from './modules/StepByStepModal'
 import CreateForm from './modules/CreateForm'
 
+import Advert from '../../models/Advert'
+import Idea from '../../models/Idea'
+
 const columns = [
   {
     title: '开关',
-    dataIndex: 'no',
+    dataIndex: 'enable',
     scopedSlots: { customRender: 'switch' }
   },
   {
     title: '审核状态',
-    dataIndex: 'status',
-    scopedSlots: { customRender: 'status' }
+    dataIndex: 'verify_success',
+    customRender: bool => bool ? '已审核' : '未审核'
   },
   {
     title: '广告计划',
-    dataIndex: 'callNo'
+    dataIndex: 'advert.name'
   },
   {
     title: '创意名称',
-    dataIndex: 'callNo'
+    dataIndex: 'name'
   },
   {
     title: '广告标题',
-    dataIndex: 'callNo'
+    dataIndex: 'title'
   },
   {
     title: '创意预览',
@@ -132,31 +138,31 @@ const columns = [
   },
   {
     title: '消耗',
-    dataIndex: 'callNo'
+    dataIndex: 'all_consume'
   },
   {
     title: '展示数',
-    dataIndex: 'callNo'
+    dataIndex: 'all_view_count'
   },
   {
     title: '点击数',
-    dataIndex: 'callNo'
+    dataIndex: 'all_click_count'
   },
   {
     title: '平均点击单价',
-    dataIndex: 'callNo'
+    dataIndex: 'avg_click_price'
   },
   {
     title: '点击率',
-    dataIndex: 'callNo'
+    dataIndex: 'click_rate'
   },
   {
     title: '投放时间',
-    dataIndex: 'callNo'
+    dataIndex: 'publish_at'
   },
   {
     title: '创建时间',
-    dataIndex: 'callNo'
+    dataIndex: 'created_at'
   },
   {
     title: '操作',
@@ -193,7 +199,7 @@ export default {
     CreateForm,
     StepByStepModal
   },
-  data() {
+  data () {
     this.columns = columns
     return {
       // create model
@@ -213,38 +219,92 @@ export default {
         })
       },
       selectedRowKeys: [],
-      selectedRows: []
+      selectedRows: [],
+      advertOptions: [],
+      page: {
+        current: 1,
+        pageSize: 10,
+        total: 0,
+        opts: [10, 20, 30, 40]
+      },
+      search: {
+        advert_id: null,
+        name: null,
+        created_at: null
+      },
+      ideas: [],
+      loading: false
     }
   },
   filters: {
-    statusFilter(type) {
+    statusFilter (type) {
       return statusMap[type].text
     },
-    statusTypeFilter(type) {
+    statusTypeFilter (type) {
       return statusMap[type].status
     }
   },
-  created() {
+  created () {
     getRoleList({ t: new Date() })
+    this.fetchAdvertOptions()
+    if (this.$route.params.advert_id) {
+      this.search.advert_id = this.$route.params.advert_id
+    }
+    this.fetchIdeas()
   },
   computed: {
-    rowSelection() {
+    rowSelection () {
       return {
         selectedRowKeys: this.selectedRowKeys,
         onChange: this.onSelectChange
       }
     }
   },
+  watch: {
+    'page.current': 'fetchIdeas',
+    'page.pageSize': 'fetchIdeas'
+  },
   methods: {
-    handleAdd() {
+    c () {
+      console.log(233)
+    },
+    async fetchAdvertOptions () {
+      const { data } = await Advert.select(['id', 'name']).get()
+
+      this.advertOptions = data
+    },
+    async fetchIdeas () {
+      try {
+        this.loading = true
+
+        const builder = Idea.params({
+          page: this.page.current,
+          pageSize: this.page.pageSize || 10
+        }).include('advert')
+
+        Object.keys(this.search).forEach(k => builder.when(this.search[k] !== null && this.search[k] !== undefined, q => {
+          return q.where(k, k === 'created_at' ? this.search[k].format('YYYY-MM-DD') : this.search[k])
+        }))
+
+        const { data, meta } = await builder.get()
+
+        this.ideas = data
+        this.page.total = meta.total
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.loading = false
+      }
+    },
+    handleAdd () {
       this.mdl = null
       this.$router.push('/originality/sheet')
     },
-    handleEdit(record) {
+    handleEdit (record) {
       this.visible = true
       this.mdl = { ...record }
     },
-    handleOk() {
+    handleOk () {
       const form = this.$refs.createModal.form
       this.confirmLoading = true
       form.validateFields((errors, values) => {
@@ -288,27 +348,27 @@ export default {
         }
       })
     },
-    handleCancel() {
+    handleCancel () {
       this.visible = false
 
       const form = this.$refs.createModal.form
       form.resetFields() // 清理表单数据（可不做）
     },
-    handleSub(record) {
+    handleSub (record) {
       if (record.status !== 0) {
         this.$message.info(`${record.no} 订阅成功`)
       } else {
         this.$message.error(`${record.no} 订阅失败，规则已关闭`)
       }
     },
-    onSelectChange(selectedRowKeys, selectedRows) {
+    onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     },
-    toggleAdvanced() {
+    toggleAdvanced () {
       this.advanced = !this.advanced
     },
-    resetSearchForm() {
+    resetSearchForm () {
       this.queryParam = {
         date: moment(new Date())
       }
