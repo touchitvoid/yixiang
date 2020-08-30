@@ -222,7 +222,7 @@ export default {
   methods: {
     handleAdd() {
       this.mdl = null
-      this.$router.push('/originality/sheet')
+      this.$router.push('/originality/group/sheet')
     },
     handleEdit(record) {
       this.visible = true

@@ -77,8 +77,8 @@ export const asyncRouterMap = [
             meta: { title: '广告组', keepAlive: true }
           },
           {
-            path: '/originality/sheet',
-            name: 'OriginalitySheet',
+            path: '/originality/group/sheet',
+            name: 'OriginalityGroupSheet',
             hideHeader: true, // 强制显示 MenuItem 而不是 SubMenu
             component: () => import('@/views/originality/GroupSheet'),
             meta: { title: '新建/编辑广告组', keepAlive: true }
@@ -89,6 +89,13 @@ export const asyncRouterMap = [
             hideChildrenInMenu: true,
             component: () => import('@/views/originality/OriginalityList'),
             meta: { title: '创意列表', keepAlive: true }
+          },
+          {
+            path: '/originality/sheet',
+            name: 'OriginalitySheet',
+            hideChildrenInMenu: true,
+            component: () => import('@/views/originality/OriginalitySheet'),
+            meta: { title: '添加/编辑创意', keepAlive: true }
           }
         ]
       },

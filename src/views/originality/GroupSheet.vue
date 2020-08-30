@@ -102,7 +102,7 @@
     </a-form>
     <a-divider></a-divider>
     <a-button style="margin-right: 12px">取消</a-button>
-    <a-button type="success" @click="handleSubmit">{{ isEdit ? '保存计划' : '新增计划' }}</a-button>
+    <a-button type="primary" @click="handleSubmit">{{ isEdit ? '保存计划' : '新增计划' }}</a-button>
     <a-modal title="更改人生状态" v-model="visible">
       <a-checkbox-group v-if="modalKey==='life'" v-model="formData.human_state">
         <a-checkbox
@@ -288,6 +288,10 @@ export default {
 
 <style lang="less" scoped>
 @input-width: 280px;
+
+/deep/ .ant-form-item {
+  margin-bottom: 5px;
+}
 
 .selector,
 .input {
