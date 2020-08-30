@@ -5,48 +5,51 @@
 
         <a-form layout="vertical">
           <a-form-item
-            label="昵称"
+            label="公司名称"
           >
-            <a-input placeholder="给自己起个名字" />
+            <a-input placeholder="请输入" />
           </a-form-item>
           <a-form-item
-            label="Bio"
+            label="公司地址"
           >
-            <a-textarea rows="4" placeholder="You are not alone."/>
+            <a-input placeholder="请输入" />
+          </a-form-item>
+          <a-form-item
+            label="账户ID"
+          >
+            <a-input placeholder="请输入" />
+          </a-form-item>
+          <a-form-item
+            label="登录账户"
+          >
+            <a-input placeholder="请输入" />
+          </a-form-item>
+          <a-form-item
+            label="联系人"
+          >
+            <a-input placeholder="请输入" />
+          </a-form-item>
+          <a-form-item
+            label="QQ号码"
+          >
+            <a-input placeholder="请输入" />
+          </a-form-item>
+          <a-form-item
+            label="手机号码"
+          >
+            <a-input placeholder="请输入" />
+          </a-form-item>
+          <a-form-item
+            label="登录邮箱"
+          >
+            <a-input placeholder="请输入" />
           </a-form-item>
 
           <a-form-item
-            label="电子邮件"
+            label="站点域名"
             :required="false"
           >
-            <a-input placeholder="exp@admin.com"/>
-          </a-form-item>
-          <a-form-item
-            label="加密方式"
-            :required="false"
-          >
-            <a-select defaultValue="aes-256-cfb">
-              <a-select-option value="aes-256-cfb">aes-256-cfb</a-select-option>
-              <a-select-option value="aes-128-cfb">aes-128-cfb</a-select-option>
-              <a-select-option value="chacha20">chacha20</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-            label="连接密码"
-            :required="false"
-          >
-            <a-input placeholder="h3gSbecd"/>
-          </a-form-item>
-          <a-form-item
-            label="登录密码"
-            :required="false"
-          >
-            <a-input placeholder="密码"/>
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">保存</a-button>
+            <a-input type="textarea" :rows="4" placeholder="www"/>
           </a-form-item>
         </a-form>
 

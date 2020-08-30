@@ -15,6 +15,11 @@
                 基本设置
               </router-link>
             </a-menu-item>
+            <a-menu-item key="/account/settings/password">
+              <router-link :to="{ name: 'Password' }">
+                修改密码
+              </router-link>
+            </a-menu-item>
           </a-menu>
         </div>
         <div class="account-settings-info-right">
