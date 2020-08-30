@@ -112,61 +112,75 @@ const columns = [
   {
     title: '开关',
     dataIndex: 'enable',
+    key: 'enable',
     scopedSlots: { customRender: 'switch' }
   },
   {
     title: '审核状态',
     dataIndex: 'verify_success',
+    key: 'verify_success',
     customRender: bool => bool ? '已审核' : '未审核'
   },
   {
     title: '广告计划',
-    dataIndex: 'advert.name'
+    dataIndex: 'advert.name',
+    key: 'advert.name'
   },
   {
     title: '创意名称',
-    dataIndex: 'name'
+    dataIndex: 'name',
+    key: 'name'
   },
   {
     title: '广告标题',
-    dataIndex: 'title'
+    dataIndex: 'title',
+    key: 'title'
   },
   {
     title: '创意预览',
     dataIndex: 'cover',
+    key: 'cover',
     scopedSlots: { customRender: 'cover' }
   },
   {
     title: '消耗',
-    dataIndex: 'all_consume'
+    dataIndex: 'all_consume',
+    key: 'all_consume'
   },
   {
     title: '展示数',
-    dataIndex: 'all_view_count'
+    dataIndex: 'all_view_count',
+    key: 'all_view_count'
   },
   {
     title: '点击数',
-    dataIndex: 'all_click_count'
+    dataIndex: 'all_click_count',
+    key: 'all_click_count'
   },
   {
     title: '平均点击单价',
-    dataIndex: 'avg_click_price'
+    dataIndex: 'avg_click_price',
+    key: 'avg_click_price'
   },
   {
     title: '点击率',
-    dataIndex: 'click_rate'
+    dataIndex: 'click_rate',
+    key: 'click_rate'
   },
   {
     title: '投放时间',
-    dataIndex: 'publish_at'
+    dataIndex: 'publish_at',
+    key: 'publish_at'
   },
   {
     title: '创建时间',
-    dataIndex: 'created_at'
+    dataIndex: 'created_at',
+    key: 'created_at'
   },
   {
     title: '操作',
     dataIndex: 'action',
+    key: 'action',
     width: '200px',
     scopedSlots: { customRender: 'action' }
   }
@@ -265,9 +279,6 @@ export default {
     'page.pageSize': 'fetchIdeas'
   },
   methods: {
-    c () {
-      console.log(233)
-    },
     async fetchAdvertOptions () {
       const { data } = await Advert.select(['id', 'name']).get()
 
