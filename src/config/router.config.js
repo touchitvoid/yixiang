@@ -81,7 +81,7 @@ export const asyncRouterMap = [
         children: [
           {
             path: '/statistics',
-            name: 'statistics',
+            name: 'statisticsList',
             component: () => import('@/views/statistics/index'),
             meta: { title: '数据报表', hideChildrenInMenu: true}
           }
