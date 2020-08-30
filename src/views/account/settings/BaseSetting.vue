@@ -3,58 +3,18 @@
     <a-row :gutter="16">
       <a-col :md="24" :lg="16">
 
-        <a-form layout="vertical">
+        <a-form>
           <a-form-item
-            label="公司名称"
+            :label="item.label"
+            v-for="(item, key) in userInfoKeys"
+            :key="key"
           >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-          <a-form-item
-            label="公司地址"
-          >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-          <a-form-item
-            label="账户ID"
-          >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-          <a-form-item
-            label="登录账户"
-          >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-          <a-form-item
-            label="联系人"
-          >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-          <a-form-item
-            label="QQ号码"
-          >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-          <a-form-item
-            label="手机号码"
-          >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-          <a-form-item
-            label="登录邮箱"
-          >
-            <a-input placeholder="请输入" />
-          </a-form-item>
-
-          <a-form-item
-            label="站点域名"
-            :required="false"
-          >
-            <a-input type="textarea" :rows="4" placeholder="www"/>
+            {{ info[item.key] }}
           </a-form-item>
         </a-form>
 
       </a-col>
-      <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
+      <!-- <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
         <div class="ant-upload-preview" @click="$refs.modal.edit(1)" >
           <a-icon type="cloud-upload-o" class="upload-icon"/>
           <div class="mask">
@@ -62,7 +22,7 @@
           </div>
           <img :src="option.img"/>
         </div>
-      </a-col>
+      </a-col> -->
 
     </a-row>
 
@@ -73,6 +33,7 @@
 
 <script>
 import AvatarModal from './AvatarModal'
+import { me } from '@/api/user'
 
 export default {
   components: {
@@ -82,6 +43,18 @@ export default {
     return {
       // cropper
       preview: {},
+      info: {},
+      userInfoKeys: [
+        { label: '公司名称', key: 'company_name' },
+        { label: '公司地址', key: 'company_address' },
+        { label: '账户ID', key: 'id' },
+        { label: '登录账户', key: 'username' },
+        { label: '联系人', key: 'linkman' },
+        { label: 'QQ号码', key: 'qq_number' },
+        { label: '手机号码', key: 'phone_number' },
+        { label: '登录邮箱', key: 'email' },
+        { label: '站点域名', key: 'site_domain' }
+      ],
       option: {
         img: '/avatar2.jpg',
         info: true,
@@ -99,7 +72,18 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getUserInfo()
+  },
   methods: {
+    async getUserInfo () {
+      try {
+        const { data } = await me()
+        this.info = data.data
+      } catch (error) {
+        console.log(error)
+      }
+    },
     setavatar (url) {
       this.option.img = url
     }

@@ -1,20 +1,20 @@
 <template>
   <page-header-wrapper>
     <a-card :bordered="false">
-      <s-table
-        ref="table"
-        size="default"
-        rowKey="key"
-        :columns="columns"
-        :data="loadData"
-        showPagination="auto"
-      >
-      </s-table>
+      <a-table 
+      ref="table" 
+      size="default" 
+      rowKey="key" 
+      :columns="columns" 
+      :data-source="tableData" 
+      showPagination="auto">
+      </a-table>
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
+import LoginLog from '../../models/LoginLog'
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
 import { getRoleList, getServiceList } from '@/api/manage'
@@ -22,29 +22,29 @@ import { getRoleList, getServiceList } from '@/api/manage'
 const columns = [
   {
     title: '登录时间',
-    dataIndex: 'callNo'
+    dataIndex: 'created_at'
   },
   {
     title: 'IP',
-    dataIndex: 'callNo'
+    dataIndex: 'ip_address'
   },
   {
     title: '设备',
-    dataIndex: 'callNo'
+    dataIndex: 'equipment'
   },
   {
     title: '操作系统',
-    dataIndex: 'callNo'
+    dataIndex: 'os'
   },
   {
     title: '登录所属',
-    dataIndex: 'callNo'
+    dataIndex: 'user.id',
+    customRender: value => value.user.id
   }
 ]
 
-
 export default {
-  name: 'Finance',
+  name: 'LOg',
   components: {
     STable,
     Ellipsis
@@ -52,29 +52,52 @@ export default {
   data() {
     this.columns = columns
     return {
-      // 查询参数
-      queryParam: {},
-      // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
-        const requestParameters = Object.assign({}, parameter, this.queryParam)
-        console.log('loadData request parameters:', requestParameters)
-        return getServiceList(requestParameters).then(res => {
-          return res.result
-        })
+      loading: false,
+      page: {
+        current: 1,
+        pageSize: 10,
+        total: 0,
+        opts: [10, 20, 30, 40]
       },
+      tableData: [],
+      // 查询参数
+      search: {}
+      // 加载数据方法 必须为 Promise 对象
     }
   },
   created() {
-    getRoleList({ t: new Date() })
+    this.fetchLogs()
   },
   methods: {
+    async fetchLogs() {
+      try {
+        this.loading = true
 
+        const builder = LoginLog.params({
+          page: this.page.current,
+          pageSize: this.page.pageSize || 10
+        }).include('user')
+
+        Object.keys(this.search).forEach(k =>
+          builder.when(this.search[k] !== null && this.search[k] !== undefined, q => q.where(k, this.search[k]))
+        )
+
+        const { data, meta } = await builder.get()
+
+        this.logs = data
+        this.page.total = meta.total
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.loading = false
+      }
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .cover-img {
-    max-height: 90px;
-  }
+.cover-img {
+  max-height: 90px;
+}
 </style>
