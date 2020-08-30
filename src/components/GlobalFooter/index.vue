@@ -6,7 +6,7 @@
 <!--      <a href="https://www.github.com/sendya/" target="_blank">@Sendya</a>-->
     </template>
     <template v-slot:copyright>
-      <a href="https://github.com/vueComponent" target="_blank">异乡管理后台</a>
+      <a href="#">异乡管理后台</a>
     </template>
   </global-footer>
 </template>
