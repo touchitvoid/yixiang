@@ -2,6 +2,7 @@ import storage from 'store'
 import { login, getInfo, logout } from '@/api/login'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
+import { me } from '@/api/user'
 
 const user = {
   state: {
@@ -47,7 +48,11 @@ const user = {
         })
       })
     },
-
+// 拉取当前登录用户信息
+    async fetchCurrentUserInfo ({ commit }) {
+      const { data: { data } } = await me()
+      commit('SET_INFO', data || {})
+    },
     // 获取用户信息
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {

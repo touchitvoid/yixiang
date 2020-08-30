@@ -1,26 +1,26 @@
 <template>
-  <a-card class="container">
+  <div class="container">
     <div class="form-item">
       <div class="form-title">步骤一</div>
-      <a-form :label-width="80" label-position="left">
-        <a-form-item label="关联计划:">
-          <a-select style="width: 150px" class="selector" placeholder="请选择..." v-model="form.advert_id" clearable>
-            <a-select-option v-for="{ id, name } in advertOptions" :value="id" :key="id">{{ name }}</a-select-option>
-          </a-select>
-          <a-divider type="vertical" />
-          <a-button type="success" @click="$router.push({ name: 'ad_sheet' })">新建推广计划</a-button>
-        </a-form-item>
-        <a-form-item label="优化目标:">
-          <a-radio type="button" v-model="form.optimize_target">
-            <a-radio v-for="{ label, value } in optimize_targets" :key="value" :label="value">{{ label }}</a-radio>
-          </a-radio>
-        </a-form-item>
-        <a-form-item label="投放方式:">
-          <a-radio-group type="button" v-model="form.publish_method">
-            <a-radio v-for="{ label, value } in publish_methods" :key="value" :label="value">{{ label }}</a-radio>
-          </a-radio-group>
-        </a-form-item>
-        <a-form-item label="投放目的:">
+      <Form :label-width="80" label-position="left">
+        <FormItem label="关联计划:">
+          <Select style="width: 150px" class="selector" placeholder="请选择..." v-model="form.advert_id" clearable>
+            <Option v-for="{ id, name } in advertOptions" :value="id" :key="id">{{ name }}</Option>
+          </Select>
+          <Divider type="vertical" />
+          <Button type="success" @click="$router.push({ name: 'ad_sheet' })">新建推广计划</Button>
+        </FormItem>
+        <FormItem label="优化目标:">
+          <RadioGroup type="button" v-model="form.optimize_target">
+            <Radio v-for="{ label, value } in optimize_targets" :key="value" :label="value">{{ label }}</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="投放方式:">
+          <RadioGroup type="button" v-model="form.publish_method">
+            <Radio v-for="{ label, value } in publish_methods" :key="value" :label="value">{{ label }}</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="投放目的:">
           <div
             v-for="item in publish_objectives"
             :key="item.value"
@@ -28,25 +28,25 @@
             @click.stop="form.publish_objective = item.value"
             class="platform-item"
           >{{ item.label }}</div>
-        </a-form-item>
-      </a-form>
+        </FormItem>
+      </Form>
     </div>
-    <a-divider></a-divider>
+    <Divider></Divider>
     <div class="form-title">步骤二</div>
-    <a-form :label-width="80" label-position="left">
-      <a-form-item label="创意名称:">
-        <a-input v-model="form.name" class="selector" placeholder="请输入创意名称"></a-input>
-      </a-form-item>
-      <a-form-item label="网站链接:">
-        <a-input v-model="form.site_link" class="selector" placeholder="请输入网站链接"></a-input>
-      </a-form-item>
-      <a-form-item label="广告标题:">
-        <a-input v-model="form.title" class="selector" placeholder="请输入广告标题"></a-input>
-      </a-form-item>
-      <a-form-item label="品牌名称:">
-        <a-input v-model="form.brand_name" class="selector" placeholder="请输入品牌名称"></a-input>
-      </a-form-item>
-      <a-form-item label="展示类型:">
+    <Form :label-width="80" label-position="left">
+      <FormItem label="创意名称:">
+        <Input v-model="form.name" class="selector" placeholder="请输入创意名称"></Input>
+      </FormItem>
+      <FormItem label="网站链接:">
+        <Input v-model="form.site_link" class="selector" placeholder="请输入网站链接"></Input>
+      </FormItem>
+      <FormItem label="广告标题:">
+        <Input v-model="form.title" class="selector" placeholder="请输入广告标题"></Input>
+      </FormItem>
+      <FormItem label="品牌名称:">
+        <Input v-model="form.brand_name" class="selector" placeholder="请输入品牌名称"></Input>
+      </FormItem>
+      <FormItem label="展示类型:">
         <div
           v-for="item in view_types"
           :key="item.value"
@@ -54,25 +54,25 @@
           @click.stop="form.view_type = item.value"
           class="platform-item"
         >{{ item.label }}</div>
-      </a-form-item>
-      <a-form-item label="创意图片:" :key="currentViewType.value" >
-        <a-upload :show-upload-list="false" :action="uploadAction" :headers="uploadHeaders" :on-success="handleCoverUploadSuccess">
+      </FormItem>
+      <FormItem label="创意图片:" :key="currentViewType.value" >
+        <Upload :show-upload-list="false" :action="uploadAction" :headers="uploadHeaders" :on-success="handleCoverUploadSuccess">
           <div class="img-cover" :style="currentViewType.style">
-            <img v-if="form.cover" class="cover" :src="form.cover || ''" />
-            <div v-else><a-icon type="md-cloud-upload" /> 点击上传图片</div>
+            <img class="cover" :src="form.cover || ''" />
           </div>
-        </a-upload>
+        </Upload>
         ({{ currentViewType.style.width + '*' + currentViewType.style.height }}，500KB以内，支持 jpg, png, gif)
-      </a-form-item>
-    </a-form>
-    <a-divider></a-divider>
-    <a-button style="margin-right: 12px" @click="$router.push({ name: 'originality' })">取消</a-button>
-    <a-button type="success" @click="handleSubmit">{{ isEdit ? '更新创意' : '新增创意' }}</a-button>
-  </a-card>
+      </FormItem>
+    </Form>
+    <Divider></Divider>
+    <Button style="margin-right: 12px" @click="$router.push({ name: 'originality' })">取消</Button>
+    <Button type="success" @click="handleSubmit">{{ isEdit ? '更新创意' : '新增创意' }}</Button>
+  </div>
 </template>
 
 <script>
 import Advert from '../../models/Advert'
+import { baseUrl } from '../../libs/api.request'
 import {
   optimize_targets,
   publish_methods,
@@ -86,7 +86,7 @@ import {
 import Idea from '../../models/Idea'
 import store from '../../store'
 import _ from 'lodash'
-import config from '@/config'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'CreatePlan',
@@ -129,9 +129,7 @@ export default {
     isEdit () {
       return typeof this.editing === 'number'
     },
-    uploadAction () {
-      return (process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro) + '/files/cover'
-    }
+    uploadAction: () => baseUrl + '/files/cover'
   },
   watch: {
     advertId: {
@@ -145,10 +143,11 @@ export default {
       handler: 'fetchEditing'
     }
   },
-  created () {
-    this.fetchAdvertOptions()
+  async created () {
+    await this.fetchAdvertOptions()
   },
   methods: {
+    ...mapActions(['fetchCurrentUserInfo']),
     async fetchEditing () {
       if (!this.editing) return
 
@@ -165,9 +164,15 @@ export default {
       }
     },
     async fetchAdvertOptions () {
-      const { data } = await Advert.select(['id', 'name']).where('user_id', store.getters.user.id).get()
+      try {
+        await this.fetchCurrentUserInfo()
 
-      this.advertOptions = data
+        const { data } = await Advert.select(['id', 'name']).where('user_id', store.state.user.info.id).get()
+
+        this.advertOptions = data
+      } catch (e) {
+        this.$Message.error('广告数据请求失败')
+      }
     },
     async handleSubmit () {
       try {
@@ -186,75 +191,65 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@input-width: 280px;
+  @input-width: 280px;
 
-.selector,
-.input {
-  width: @input-width;
-}
-.form-title {
-  font-size: 17px;
-  font-weight: bold;
-  color: rgba(0, 0, 0, 0.7);
-  box-sizing: border-box;
-  padding-left: 10px;
-  border-left: 4px solid rosybrown;
-  margin-bottom: 14px;
-}
+  .selector,
+  .input {
+    width: @input-width;
+  }
+  .form-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+    padding-left: 10px;
+    border-left: 4px solid rosybrown;
+    margin-bottom: 14px;
+  }
 
-.platform-item {
-  width: 110px;
-  height: 45px;
-  line-height: 45px;
-  text-align: center;
-  border-radius: 4px;
-  box-shadow: 0 10px 21px -1px rgba(0, 0, 0, 0.1);
-  display: inline-block;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20px;
-  box-sizing: border-box;
-  position: relative;
-  cursor: pointer;
-  &.checked {
-    border: 1px solid #2d8cf0;
-    &::after {
-      content: "";
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      border-radius: 10px;
-      background: #2d8cf0;
-      width: 8px;
-      height: 8px;
+  .platform-item {
+    width: 100px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: 0 10px 21px -1px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    &.checked {
+      border: 1px solid #2d8cf0;
+      &::after {
+        content: "";
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        border-radius: 10px;
+        background: #2d8cf0;
+        width: 8px;
+        height: 8px;
+      }
     }
   }
-}
 
-.img-cover {
-  border: 1px solid #d8d8d8;
-  width: 320px;
-  height: 150px;
-  transition: all 0.8s;
+  .img-cover {
+    border: 1px solid #d8d8d8;
+    width: 320px;
+    height: 150px;
+    transition: all 0.8s;
 
-  > div {
-    width: 100%;
-    height: 100%;
-    display: -webkit-flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 17px;
-    letter-spacing: 2px;
+    img.cover {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    img.cover[src=""],img:not([src]){
+      opacity: 0;
+    }
   }
-
-  img.cover {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-  }
-
-  img.cover[src=""],img:not([src]){
-    opacity: 0;
-  }
-}
 </style>
