@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <a-card class="container">
     <div class="form-item">
       <div class="form-title">步骤一</div>
       <Form :label-width="80" label-position="left">
@@ -67,7 +67,7 @@
     <Divider></Divider>
     <Button style="margin-right: 12px" @click="$router.push({ name: 'originality' })">取消</Button>
     <Button type="success" @click="handleSubmit">{{ isEdit ? '更新创意' : '新增创意' }}</Button>
-  </div>
+  </a-card>
 </template>
 
 <script>

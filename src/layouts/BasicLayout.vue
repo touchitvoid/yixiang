@@ -7,7 +7,7 @@
     :isMobile="isMobile"
     :handleMediaQuery="handleMediaQuery"
     :handleCollapse="handleCollapse"
-    :logo="logoRender"
+    :logo="Logo"
     :i18nRender="i18nRender"
     v-bind="settings"
   >
@@ -39,7 +39,7 @@ import defaultSettings from '@/config/defaultSettings'
 import RightContent from '@/components/GlobalHeader/RightContent'
 import GlobalFooter from '@/components/GlobalFooter'
 import Ads from '@/components/Other/CarbonAds'
-import LogoSvg from '../assets/logo.svg?inline'
+import Logo from '../assets/logo.png'
 import { asyncRouterMap } from '@/config/router.config.js'
 
 export default {
@@ -52,6 +52,7 @@ export default {
   },
   data () {
     return {
+      Logo,
       // preview.pro.antdv.com only use.
       isProPreviewSite: process.env.VUE_APP_PREVIEW === 'true' && process.env.NODE_ENV !== 'development',
       // end

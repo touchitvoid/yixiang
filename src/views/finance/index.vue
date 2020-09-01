@@ -1,6 +1,6 @@
 <template>
   <page-header-wrapper>
-    <a-card :bordered="false">
+    <a-card class="full-s" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">

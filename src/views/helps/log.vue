@@ -1,6 +1,6 @@
 <template>
   <page-header-wrapper>
-    <a-card :bordered="false">
+    <a-card class="full-s" :bordered="false">
       <a-table 
       ref="table" 
       size="default" 

@@ -5,9 +5,9 @@
 <!--      <a href="https://www.github.com/vueComponent/ant-design-vue-pro" target="_blank">Github</a>-->
 <!--      <a href="https://www.github.com/sendya/" target="_blank">@Sendya</a>-->
     </template>
-    <template v-slot:copyright>
+    <!-- <template v-slot:copyright>
       <a href="#">异乡管理后台</a>
-    </template>
+    </template> -->
   </global-footer>
 </template>
 

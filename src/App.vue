@@ -26,3 +26,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+  .full-s {
+    min-height: 75vh;
+  }
+</style>

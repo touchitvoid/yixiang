@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <a-card class="container">
     <div class="form-item">
       <div class="form-title">计划名称</div>
       <i-input v-model="formData.name" style="width: 500px;display: block;margin-bottom: 15px" placeholder="请输入计划名称" />
@@ -129,7 +129,7 @@
         >{{ item.label }}</Checkbox>
       </CheckboxGroup>
     </Modal>
-  </div>
+  </a-card>
 </template>
 
 <script>
